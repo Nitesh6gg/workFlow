@@ -9,7 +9,7 @@
 A comprehensive Project Management System built with Java, Spring Boot, and MySQL. This system is designed to help teams manage projects efficiently, track progress, and collaborate effectively.
 
 
-## Prerequisites
+## 📋 Prerequisites
 
 Before you begin, ensure you have met the following requirements:
 
@@ -20,12 +20,7 @@ Before you begin, ensure you have met the following requirements:
 - Git
 
 
-## Documentation
-
-[Documentation](https://linktodocumentation)
-
-
-## Installation
+## 🚀 Installation
 
 1.Clone the Repository
 
