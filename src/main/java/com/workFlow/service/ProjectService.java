@@ -11,4 +11,6 @@ public interface ProjectService {
     MessageResponse createProject(Project project, Principal principal);
 
     ResponseEntity<?> getAllProjects(int page, int size, String sortBy, String sortOrder, Principal principal);
+
+    ResponseEntity<?> getAllProjectsByStatus(String projectStatus,int page, int size, String sortBy, String sortOrder, Principal principal);
 }

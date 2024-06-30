@@ -22,6 +22,7 @@ public class Project {
     private String description;
     private int managerId;
     private String status;
+    private String progressBar;
     private String startDate;
     private String endDate;
     private String createdBy;

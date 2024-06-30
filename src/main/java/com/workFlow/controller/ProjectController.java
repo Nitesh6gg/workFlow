@@ -30,4 +30,13 @@ public class ProjectController {
         return projectService.getAllProjects(page, size, sortBy, sortOrder, principal);
     }
 
+    @GetMapping("/status")
+    public ResponseEntity<?> getAllProjectsByStatus (@RequestParam String projectStatus,
+                                             @RequestParam(defaultValue = "0") int page,
+                                             @RequestParam(defaultValue = "5") int size,
+                                             @RequestParam(defaultValue = "createdDate") String sortBy,
+                                             @RequestParam(defaultValue = "Desc") String sortOrder, Principal principal){
+        return projectService.getAllProjectsByStatus(projectStatus,page, size, sortBy, sortOrder, principal);
+    }
+
 }

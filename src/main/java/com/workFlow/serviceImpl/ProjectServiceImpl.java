@@ -7,9 +7,11 @@ import com.workFlow.payload.GlobalResponse;
 import com.workFlow.payload.MessageResponse;
 import com.workFlow.repository.ProjectRepository;
 import com.workFlow.service.ProjectService;
+import com.workFlow.util.Specifications;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -70,5 +72,15 @@ public class ProjectServiceImpl implements ProjectService {
         List<List<Map<String, Object>>> projects = projectPage.getContent();
         Map<String, Object> response = PaginationHelper.createResponse(projectPage, projects);
         return ResponseEntity.ok(response);
+    }
+
+    @Override
+    public ResponseEntity<?> getAllProjectsByStatus(String projectStatus,int page, int size, String sortBy, String sortOrder, Principal principal) {
+        Pageable pageable = PaginationHelper.createPageable(page, size, sortBy, sortOrder);
+        Specification<Project>specs=Specification
+                .where(Specifications.projectStatus(projectStatus));
+                //.and(Specifications.projectCreatedBy(userHelper.getUserName(principal)));
+        System.out.println("querying project"+specs.toString());
+        return ResponseEntity.ok(projectRepo.findAll(specs,pageable));
     }
 }
