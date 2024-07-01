@@ -16,9 +16,18 @@ public class PaginationHelper {
         return PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortOrder), sortBy));
     }
 
-    public static <T> Map<String, Object> createResponse(Page<T> page, List<T> content) {
+   /* public static <T> Map<String, Object> createResponse(Page<T> page, List<T> content) {
         Map<String, Object> response = new HashMap<>();
         response.put("items", content);
+        response.put("currentPage", page.getNumber());
+        response.put("totalItems", page.getTotalElements());
+        response.put("totalPages", page.getTotalPages());
+        return response;
+    }*/
+
+    public static Map<String, Object> createResponse(Page<?> page, List<?> content) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", content);
         response.put("currentPage", page.getNumber());
         response.put("totalItems", page.getTotalElements());
         response.put("totalPages", page.getTotalPages());

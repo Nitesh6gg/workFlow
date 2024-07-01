@@ -7,7 +7,7 @@ import com.workFlow.payload.GlobalResponse;
 import com.workFlow.payload.MessageResponse;
 import com.workFlow.repository.ProjectRepository;
 import com.workFlow.service.ProjectService;
-import com.workFlow.util.Specifications;
+import com.workFlow.util.FilterSpecifications;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -75,12 +75,22 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ResponseEntity<?> getAllProjectsByStatus(String projectStatus,int page, int size, String sortBy, String sortOrder, Principal principal) {
+    public ResponseEntity<?> getAllProjectsByStatus(String projectStatus, int page, int size, String sortBy, String sortOrder, Principal principal) {
         Pageable pageable = PaginationHelper.createPageable(page, size, sortBy, sortOrder);
-        Specification<Project>specs=Specification
-                .where(Specifications.projectStatus(projectStatus));
-                //.and(Specifications.projectCreatedBy(userHelper.getUserName(principal)));
-        System.out.println("querying project"+specs.toString());
-        return ResponseEntity.ok(projectRepo.findAll(specs,pageable));
+        int userType = userHelper.getUserType(principal);
+
+        Specification<Project> specs = Specification.where(FilterSpecifications.projectStatus(projectStatus));
+
+        if (userType == 2) {
+            specs = specs.and(FilterSpecifications.projectCreatedBy(userHelper.getUserName(principal)));
+        } else if (userType != 1) {
+            return new ResponseEntity<>(new GlobalResponse("You are not authorized to perform this action", HttpStatus.UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
+        }
+
+        Page<Project> projectPage = projectRepo.findAll(specs, pageable);
+        Map<String, Object> response = PaginationHelper.createResponse(projectPage, projectPage.getContent());
+
+        return ResponseEntity.ok(response);
     }
+
 }

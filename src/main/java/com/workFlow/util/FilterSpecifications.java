@@ -3,7 +3,7 @@ package com.workFlow.util;
 import com.workFlow.entity.Project;
 import org.springframework.data.jpa.domain.Specification;
 
-public class Specifications {
+public class FilterSpecifications {
 
     public static Specification<Project> projectStatus(String status) {
         return (root, query, criteriaBuilder) ->
