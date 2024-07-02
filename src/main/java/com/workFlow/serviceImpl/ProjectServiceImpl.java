@@ -7,7 +7,7 @@ import com.workFlow.payload.GlobalResponse;
 import com.workFlow.payload.MessageResponse;
 import com.workFlow.repository.ProjectRepository;
 import com.workFlow.service.ProjectService;
-import com.workFlow.util.FilterSpecifications;
+import com.workFlow.specification.ProjectSpecifications;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
@@ -74,23 +75,62 @@ public class ProjectServiceImpl implements ProjectService {
         return ResponseEntity.ok(response);
     }
 
+   /* @Override
+    public ResponseEntity<?> getAllProjectsByStatus(String projectStatus, int page, int size, String sortBy, String sortOrder, Principal principal) {
+        Pageable pageable = PaginationHelper.createPageable(page, size, sortBy, sortOrder);
+        int userType = userHelper.getUserType(principal);
+
+        if(projectStatus.equalsIgnoreCase("all")){
+            if(userType==1){
+                projectRepo.findAll();
+            }else{
+                Specification<Project> specs=Specification.where(FilterSpecifications.projectCreatedBy(userHelper.getUserName(principal)));
+            }
+        }else{
+            Specification<Project> specs = Specification.where(FilterSpecifications.projectStatus(projectStatus));
+
+            if (userType == 2) {
+                specs = specs.and(FilterSpecifications.projectCreatedBy(userHelper.getUserName(principal)));
+            } else if (userType != 1) {
+                return new ResponseEntity<>(new GlobalResponse("You are not authorized to perform this action", HttpStatus.UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
+            }
+            Page<Project> projectPage = projectRepo.findAll(specs, pageable);
+            Map<String, Object> response = PaginationHelper.createResponse(projectPage, projectPage.getContent());
+            return ResponseEntity.ok(response);
+
+        }
+        return  null;
+    }*/
+
+
     @Override
     public ResponseEntity<?> getAllProjectsByStatus(String projectStatus, int page, int size, String sortBy, String sortOrder, Principal principal) {
         Pageable pageable = PaginationHelper.createPageable(page, size, sortBy, sortOrder);
         int userType = userHelper.getUserType(principal);
 
-        Specification<Project> specs = Specification.where(FilterSpecifications.projectStatus(projectStatus));
+        Specification<Project> specs = Specification.where(null); // Initial specification
 
-        if (userType == 2) {
-            specs = specs.and(FilterSpecifications.projectCreatedBy(userHelper.getUserName(principal)));
-        } else if (userType != 1) {
-            return new ResponseEntity<>(new GlobalResponse("You are not authorized to perform this action", HttpStatus.UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
+        if (projectStatus.equalsIgnoreCase("all") || projectStatus.equalsIgnoreCase("")) {
+            if (userType == 1) {
+                specs = null; // Fetch all projects without any filters
+            } else if (userType == 2) {
+                specs = Specification.where(ProjectSpecifications.createdBy(userHelper.getUserName(principal)));
+            } else {
+                return new ResponseEntity<>(new GlobalResponse("You are not authorized to perform this action", HttpStatus.UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
+            }
+        } else {
+            specs = Specification.where(ProjectSpecifications.status(projectStatus));
+            if (userType == 2) {
+                specs = specs.and(ProjectSpecifications.createdBy(userHelper.getUserName(principal)));
+            } else if (userType != 1) {
+                return new ResponseEntity<>(new GlobalResponse("You are not authorized to perform this action", HttpStatus.UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
+            }
         }
 
-        Page<Project> projectPage = projectRepo.findAll(specs, pageable);
+        Page<Project> projectPage = (specs == null) ? projectRepo.findAll(pageable) : projectRepo.findAll(specs, pageable);
         Map<String, Object> response = PaginationHelper.createResponse(projectPage, projectPage.getContent());
-
         return ResponseEntity.ok(response);
     }
+
 
 }
