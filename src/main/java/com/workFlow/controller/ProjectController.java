@@ -4,6 +4,7 @@ import com.workFlow.entity.Project;
 import com.workFlow.payload.MessageResponse;
 import com.workFlow.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,21 +23,14 @@ public class ProjectController {
         MessageResponse response=projectService.createProject(project,principal);
         return new ResponseEntity<>(response, (HttpStatusCode) response.getHttpStatus());
     }
-    @GetMapping("/all")
-    public ResponseEntity<?> getAllProjects (@RequestParam(defaultValue = "0") int page,
-                                       @RequestParam(defaultValue = "5") int size,
-                                       @RequestParam(defaultValue = "createdDate") String sortBy,
-                                       @RequestParam(defaultValue = "Desc") String sortOrder, Principal principal){
-        return projectService.getAllProjects(page, size, sortBy, sortOrder, principal);
+    @GetMapping("/list")
+    public ResponseEntity<?> getAllProjects (Pageable pageable,Principal principal){
+        return ResponseEntity.ok(projectService.getAllProjects(pageable,principal));
     }
 
     @GetMapping("/status")
-    public ResponseEntity<?> getAllProjectsByStatus (@RequestParam String projectStatus,
-                                             @RequestParam(defaultValue = "0") int page,
-                                             @RequestParam(defaultValue = "5") int size,
-                                             @RequestParam(defaultValue = "createdDate") String sortBy,
-                                             @RequestParam(defaultValue = "Desc") String sortOrder, Principal principal){
-        return projectService.getAllProjectsByStatus(projectStatus,page, size, sortBy, sortOrder, principal);
+    public ResponseEntity<?> getAllProjectsByStatus (@RequestParam String projectStatus,Pageable pageable,Principal principal){
+        return ResponseEntity.ok(projectService.getAllProjectsByStatus(projectStatus,pageable, principal));
     }
 
 }

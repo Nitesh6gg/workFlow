@@ -2,15 +2,20 @@ package com.workFlow.service;
 
 import com.workFlow.entity.Project;
 import com.workFlow.payload.MessageResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import java.security.Principal;
+import java.util.List;
+import java.util.Map;
 
 public interface ProjectService {
 
     MessageResponse createProject(Project project, Principal principal);
 
-    ResponseEntity<?> getAllProjects(int page, int size, String sortBy, String sortOrder, Principal principal);
+    Page<?> getAllProjects(Pageable pageable, Principal principal);
 
-    ResponseEntity<?> getAllProjectsByStatus(String projectStatus,int page, int size, String sortBy, String sortOrder, Principal principal);
+    Page<?>getAllProjectsByStatus(String projectStatus, Pageable pageable, Principal principal);
+
 }
