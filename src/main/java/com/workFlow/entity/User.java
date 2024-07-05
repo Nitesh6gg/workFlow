@@ -1,5 +1,6 @@
 package com.workFlow.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class User {
     private String email;
     @Column(unique = true)
     private String phone;
+    @JsonIgnore
     private String password;
     private Boolean enabled=true;
     private String createdBy;

@@ -128,23 +128,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<?> getUsers(int page, int size, String sortBy, String sortOrder, Principal principal) {
-        Pageable pageable = PaginationHelper.createPageable(page, size, sortBy, sortOrder);
+    public Page<?> getAllUsers(Pageable pageable,Principal principal) {
 
         int userType = userHelper.getUserType(principal);
-        Page<List<Map<String, Object>>> userPage;
 
         if (userType == 1) {
-            userPage = userRepo.findAllForSuperAdmin(pageable);
+            return userRepo.findAllForSuperAdmin(pageable);
         } else if (userType == 2) {
-            userPage = userRepo.findAllForAdmin(userHelper.getUserName(principal),pageable );
+            return userRepo.findAllForAdmin(userHelper.getUserName(principal),pageable );
         } else {
-            return new ResponseEntity<>(new GlobalResponse("You are not authorized to perform this action", HttpStatus.UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
+            return Page.empty();
         }
 
-        List<List<Map<String, Object>>> users = userPage.getContent();
-        Map<String, Object> response = PaginationHelper.createResponse(userPage, users);
-        return ResponseEntity.ok(response);
     }
 
     @Override

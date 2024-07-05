@@ -60,47 +60,30 @@ public class ProjectServiceImpl implements ProjectService {
 
         int userType = userHelper.getUserType(principal);
 
+        Specification<Project> specs ;
+
         if (userType == 1) {
-            return projectRepo.findAllForSuperAdmin(pageable);
+            specs= Specification.where(null);
         } else if (userType == 2) {
-            return projectRepo.findAllForAdmin(userHelper.getUserName(principal),pageable);
-        } else {
-            return Page.empty();
-        }
+            specs = Specification.where(ProjectSpecifications.createdBy(userHelper.getUserName(principal)));
+        } else return Page.empty();
+        return projectRepo.findAll(specs,pageable);
     }
 
     @Override
     public Page<?> getAllProjectsByStatus(String projectStatus, Pageable pageable, Principal principal) {
-        return null;
-    }
-
-
-
-   /* @Override
-    public Page<List<Map<String,Object>>> agetAllProjectsByStatus(String projectStatus,Pageable pageable,Principal principal) {
-
         int userType = userHelper.getUserType(principal);
 
-        Specification<Project> specs = Specification.where(null); // Initial specification
+        Specification<Project> specs = Specification.where(null);
 
-        if (projectStatus.equalsIgnoreCase("all") || projectStatus.equalsIgnoreCase("")) {
-            if (userType == 1) {
-                specs = null; // Fetch all projects without any filters
-            } else if (userType == 2) {
-                specs = Specification.where(ProjectSpecifications.createdBy(userHelper.getUserName(principal)));
-            } else {
-                return null;
-            }
-        } else {
+        if(userType==1){
             specs = Specification.where(ProjectSpecifications.status(projectStatus));
-            if (userType == 2) {
-                specs = specs.and(ProjectSpecifications.createdBy(userHelper.getUserName(principal)));
-            } else if (userType != 1) {
-                return null;
-            }
-        }
-        return projectRepo.findAllForSuperAdmin();
-    }*/
+        }else if (userType == 2) {
+            specs = Specification.where(ProjectSpecifications.status(projectStatus)
+                                 .and(ProjectSpecifications.createdBy(userHelper.getUserName(principal))));
+        }else return Page.empty();
+        return projectRepo.findAll(specs,pageable);
+    }
 
 
 }

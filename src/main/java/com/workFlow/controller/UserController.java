@@ -4,6 +4,7 @@ import com.workFlow.payload.GlobalResponse;
 import com.workFlow.repository.UserRepository;
 import com.workFlow.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,12 +34,9 @@ public class UserController {
         return new ResponseEntity<>(response, (HttpStatusCode) response.getHttpStatus());
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<?> getAllUsers (@RequestParam(defaultValue = "0") int page,
-                                       @RequestParam(defaultValue = "5") int size,
-                                       @RequestParam(defaultValue = "userId") String sortBy,
-                                       @RequestParam(defaultValue = "asc") String sortOrder, Principal principal){
-        return userService.getUsers(page, size, sortBy, sortOrder, principal);
+    @GetMapping("/list")
+    public ResponseEntity<?> getAllUsers (Pageable pageable,Principal principal){
+        return ResponseEntity.ok(userService.getAllUsers(pageable,principal));
     }
 
     @GetMapping("/managerDropdown")
