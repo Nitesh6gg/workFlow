@@ -1,5 +1,6 @@
 package com.workFlow.controller;
 
+import com.workFlow.dto.request.CreateUserDTO;
 import com.workFlow.payload.GlobalResponse;
 import com.workFlow.repository.UserRepository;
 import com.workFlow.service.UserService;
@@ -29,8 +30,8 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<GlobalResponse> createUser (@RequestBody Map<String,Object> requestBody, Principal principal){
-        GlobalResponse response=userService.createUser(requestBody, principal);
+    public ResponseEntity<GlobalResponse> createUser (@RequestBody CreateUserDTO requestDto, Principal principal){
+        GlobalResponse response=userService.createUser(requestDto, principal);
         return new ResponseEntity<>(response, (HttpStatusCode) response.getHttpStatus());
     }
 

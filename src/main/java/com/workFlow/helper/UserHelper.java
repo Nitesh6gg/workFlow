@@ -1,5 +1,6 @@
 package com.workFlow.helper;
 
+import com.workFlow.dto.request.CreateUserDTO;
 import com.workFlow.entity.User;
 import com.workFlow.payload.GlobalResponse;
 import com.workFlow.repository.UserRepository;
@@ -57,6 +58,30 @@ public class UserHelper {
         }
 
         String password = request.get("password").toString();
+        if (password == null || password.isEmpty()) {
+            return new GlobalResponse("Password cannot be null or empty", HttpStatus.BAD_REQUEST);
+        }
+        return null;
+    }
+
+
+    public GlobalResponse checkUserDetails(CreateUserDTO request){
+        Optional<User> username = userRepo.findByUsername(request.getUsername());
+        if (username.isPresent()) {
+            return new GlobalResponse("username already in use", HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<User> email = userRepo.findByEmail(request.getEmail());
+        if (email.isPresent()) {
+            return new GlobalResponse("Email id already registered", HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<User> phone = userRepo.findByPhone(request.getPhone());
+        if (phone.isPresent()) {
+            return new GlobalResponse("Phone no. already registered", HttpStatus.BAD_REQUEST);
+        }
+
+        String password = request.getPassword();
         if (password == null || password.isEmpty()) {
             return new GlobalResponse("Password cannot be null or empty", HttpStatus.BAD_REQUEST);
         }

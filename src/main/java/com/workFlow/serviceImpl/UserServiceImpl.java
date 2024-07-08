@@ -1,14 +1,11 @@
 package com.workFlow.serviceImpl;
 
-import com.workFlow.entity.Role;
-import com.workFlow.entity.User;
-import com.workFlow.entity.UserRole;
+import com.workFlow.dto.request.CreateUserDTO;
+import com.workFlow.entity.*;
 import com.workFlow.helper.PaginationHelper;
 import com.workFlow.helper.UserHelper;
 import com.workFlow.payload.GlobalResponse;
-import com.workFlow.repository.RoleRepository;
-import com.workFlow.repository.UserRepository;
-import com.workFlow.repository.UserRoleRepository;
+import com.workFlow.repository.*;
 import com.workFlow.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -28,16 +26,20 @@ public class UserServiceImpl implements UserService {
     private final PaginationHelper paginationHelper;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository userRepo;
+    private final PositionRepository positionRepo;
+    private final DepartmentRepository departmentRepo;
     private final RoleRepository roleRepo;
     private final UserRoleRepository userRoleRepo;
 
     @Autowired
-    public UserServiceImpl(UserHelper userHelper,PaginationHelper paginationHelper,BCryptPasswordEncoder passwordEncoder,
-                           UserRepository userRepo,RoleRepository roleRepo,UserRoleRepository userRoleRepo) {
+    public UserServiceImpl(UserHelper userHelper, PaginationHelper paginationHelper, BCryptPasswordEncoder passwordEncoder,
+                           UserRepository userRepo, PositionRepository positionRepo, DepartmentRepository departmentRepo, RoleRepository roleRepo, UserRoleRepository userRoleRepo) {
         this.userHelper = userHelper;
         this.paginationHelper = paginationHelper;
         this.passwordEncoder = passwordEncoder;
         this.userRepo = userRepo;
+        this.positionRepo = positionRepo;
+        this.departmentRepo = departmentRepo;
         this.roleRepo = roleRepo;
         this.userRoleRepo = userRoleRepo;
     }
@@ -86,46 +88,63 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GlobalResponse createUser(Map<String, Object> requestBody, Principal principal) {
+    @Transactional
+    public GlobalResponse createUser(CreateUserDTO requestDto, Principal principal) {
         try {
             int userType = userHelper.getUserType(principal);
-            if (userType !=2) {
+            if (userType != 2) {
                 return new GlobalResponse("You are not authorized to perform this action", HttpStatus.UNAUTHORIZED);
             }
-            //check username,email,phone not already registered
-            GlobalResponse error=userHelper.checkUserDetails(requestBody);
-            if(error!=null) return error;
+
+            // Check username, email, phone not already registered
+            GlobalResponse error = userHelper.checkUserDetails(requestDto);
+            if (error != null) return error;
 
             User newUser = new User();
-            newUser.setUsername(requestBody.get("username").toString());
-            newUser.setEmail(requestBody.get("email").toString());
-            newUser.setPhone(requestBody.get("phone").toString());
+            newUser.setUsername(requestDto.getUsername());
+            newUser.setEmail(requestDto.getEmail());
+            newUser.setPhone(requestDto.getPhone());
             newUser.setCreatedBy(userHelper.getUserName(principal));
-            newUser.setFirstName(requestBody.get("firstName").toString());
-            newUser.setLastName(requestBody.get("lastName").toString());
-            newUser.setCreatedON(String.valueOf(new Date()));
-            newUser.setPassword(passwordEncoder.encode(requestBody.get("password").toString()));
+            newUser.setFirstName(requestDto.getFirstName());
+            newUser.setLastName(requestDto.getLastName());
+            newUser.setCreatedON(String.valueOf(LocalDateTime.now()));
+            newUser.setPassword(passwordEncoder.encode(requestDto.getPassword()));
 
             User savedUser = userRepo.save(newUser);
 
-            Optional<Role> roleOptional = roleRepo.findByRoleType("ROLE_USER");
-            if (!roleOptional.isPresent()) {
+            Optional<Role> roleOptional = roleRepo.findById(requestDto.getRole());
+            if (roleOptional.isEmpty()) {
                 return new GlobalResponse("User role not found", HttpStatus.BAD_REQUEST);
             }
             Role role = roleOptional.get();
 
-            UserRole userRole = new UserRole();
-            userRole.setRoleId(role.getRoleId());
-            userRole.setUserId(savedUser.getUserId());
-            userRole.setCreatedBy(userHelper.getUserName(principal));
-            userRole.setCreatedON(String.valueOf(new Date()));
-            userRoleRepo.save(userRole);
+            Optional<Position> positionOptional = positionRepo.findById(requestDto.getPosition());
+            if (positionOptional.isEmpty()) {
+                return new GlobalResponse("Position not found", HttpStatus.BAD_REQUEST);
+            }
+            Position position = positionOptional.get();
+
+            Optional<Department> departmentOptional = departmentRepo.findById(requestDto.getDepartment());
+            if (departmentOptional.isEmpty()) {
+                return new GlobalResponse("Department not found", HttpStatus.BAD_REQUEST);
+            }
+            Department department = departmentOptional.get();
+
+            UserRole newRole = new UserRole();
+            newRole.setUserId(savedUser.getUserId());
+            newRole.setRoleId(role.getRoleId());
+            newRole.setPositionId(position);
+            newRole.setDepartmentId(department);
+            newRole.setCreatedBy(userHelper.getUserName(principal));
+            newRole.setCreatedON(String.valueOf(LocalDateTime.now()));
+            userRoleRepo.save(newRole);
 
             return new GlobalResponse("Registration successful", HttpStatus.CREATED);
         } catch (Exception e) {
             return new GlobalResponse("Something went wrong!", e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @Override
     public Page<?> getAllUsers(Pageable pageable,Principal principal) {

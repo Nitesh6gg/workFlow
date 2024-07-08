@@ -3,6 +3,8 @@ package com.workFlow.service;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+
+import com.workFlow.dto.request.CreateUserDTO;
 import com.workFlow.payload.GlobalResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +14,7 @@ public interface UserService {
 
     GlobalResponse createAdmin(Map<String, Object> requestBody, Principal principal);
 
-    GlobalResponse createUser(Map<String, Object> requestBody, Principal principal);
+    GlobalResponse createUser(CreateUserDTO requestDto, Principal principal);
 
     Page<?> getAllUsers(Pageable pageable,Principal principal);
 
