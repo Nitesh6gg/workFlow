@@ -110,6 +110,25 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
+		<!-- Spring Boot Starter Data Redis -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+
+		<!-- Jedis or Lettuce client for Redis -->
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+		</dependency>
+		<!-- Or you can use Lettuce -->
+		<!--
+        <dependency>
+            <groupId>io.lettuce.core</groupId>
+            <artifactId>lettuce-core</artifactId>
+        </dependency>
+        -->
+
 	</dependencies>
 
 	<build>
