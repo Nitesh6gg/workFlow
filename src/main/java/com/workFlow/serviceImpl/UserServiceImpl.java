@@ -5,6 +5,7 @@ import com.workFlow.entity.*;
 import com.workFlow.helper.PaginationHelper;
 import com.workFlow.helper.UserHelper;
 import com.workFlow.payload.GlobalResponse;
+import com.workFlow.payload.MessageResponse;
 import com.workFlow.repository.*;
 import com.workFlow.service.UserService;
 import jakarta.transaction.Transactional;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.security.Principal;
@@ -57,6 +57,7 @@ public class UserServiceImpl implements UserService {
             if(error!=null) return error;
 
             User newUser = new User();
+            newUser.setUuid(UUID.randomUUID().toString());
             newUser.setUsername(requestBody.get("username").toString());
             newUser.setEmail(requestBody.get("email").toString());
             newUser.setPhone(requestBody.get("phone").toString());
@@ -89,18 +90,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public GlobalResponse createUser(CreateUserDTO requestDto, Principal principal) {
+    public MessageResponse createUser(CreateUserDTO requestDto, Principal principal) {
         try {
             int userType = userHelper.getUserType(principal);
             if (userType != 2) {
-                return new GlobalResponse("You are not authorized to perform this action", HttpStatus.UNAUTHORIZED);
+                return new MessageResponse("You are not authorized to perform this action", HttpStatus.UNAUTHORIZED);
             }
-
             // Check username, email, phone not already registered
-            GlobalResponse error = userHelper.checkUserDetails(requestDto);
+            MessageResponse error = userHelper.checkUserDetails(requestDto);
             if (error != null) return error;
 
             User newUser = new User();
+            newUser.setUuid(UUID.randomUUID().toString());
             newUser.setUsername(requestDto.getUsername());
             newUser.setEmail(requestDto.getEmail());
             newUser.setPhone(requestDto.getPhone());
@@ -109,24 +110,23 @@ public class UserServiceImpl implements UserService {
             newUser.setLastName(requestDto.getLastName());
             newUser.setCreatedON(String.valueOf(LocalDateTime.now()));
             newUser.setPassword(passwordEncoder.encode(requestDto.getPassword()));
-
             User savedUser = userRepo.save(newUser);
 
             Optional<Role> roleOptional = roleRepo.findById(requestDto.getRole());
             if (roleOptional.isEmpty()) {
-                return new GlobalResponse("User role not found", HttpStatus.BAD_REQUEST);
+                return new MessageResponse("User role not found", HttpStatus.BAD_REQUEST);
             }
             Role role = roleOptional.get();
 
             Optional<Position> positionOptional = positionRepo.findById(requestDto.getPosition());
             if (positionOptional.isEmpty()) {
-                return new GlobalResponse("Position not found", HttpStatus.BAD_REQUEST);
+                return new MessageResponse("Position not found", HttpStatus.BAD_REQUEST);
             }
             Position position = positionOptional.get();
 
             Optional<Department> departmentOptional = departmentRepo.findById(requestDto.getDepartment());
             if (departmentOptional.isEmpty()) {
-                return new GlobalResponse("Department not found", HttpStatus.BAD_REQUEST);
+                return new MessageResponse("Department not found", HttpStatus.BAD_REQUEST);
             }
             Department department = departmentOptional.get();
 
@@ -138,10 +138,9 @@ public class UserServiceImpl implements UserService {
             newRole.setCreatedBy(userHelper.getUserName(principal));
             newRole.setCreatedON(String.valueOf(LocalDateTime.now()));
             userRoleRepo.save(newRole);
-
-            return new GlobalResponse("Registration successful", HttpStatus.CREATED);
+            return new MessageResponse("Registration successful", HttpStatus.CREATED);
         } catch (Exception e) {
-            return new GlobalResponse("Something went wrong!", e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new MessageResponse("Something went wrong!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -150,15 +149,11 @@ public class UserServiceImpl implements UserService {
     public Page<?> getAllUsers(Pageable pageable,Principal principal) {
 
         int userType = userHelper.getUserType(principal);
-
         if (userType == 1) {
             return userRepo.findAllForSuperAdmin(pageable);
         } else if (userType == 2) {
             return userRepo.findAllForAdmin(userHelper.getUserName(principal),pageable );
-        } else {
-            return Page.empty();
-        }
-
+        } else return Page.empty();
     }
 
     @Override

@@ -9,8 +9,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,36 +28,29 @@ public class CustomAuthenticationTokenFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CustomAuthenticationTokenFilter.class);
-
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)throws ServletException, IOException {
 
-        logger.info("current api called : : " + request.getRequestURI());
+        log.info("Processing request for API endpoint: {}", request.getRequestURI());
 
-      try {
+        try {
          String jwtToken = extractTokenFromRequest(request);
          if (StringUtils.hasText(jwtToken) && jwtUtil.validateToken(jwtToken)) {
             String username = jwtUtil.extractUsername(jwtToken);
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+            UsernamePasswordAuthenticationToken authentication  = new UsernamePasswordAuthenticationToken(
                   userDetails, null, userDetails.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication );
          }
       } catch (IllegalArgumentException e) {
-          logger.info("Illegal Argument while fetching the username !!");
-          e.printStackTrace();
+          log.warn("Illegal Argument while fetching the username !!");
       } catch (ExpiredJwtException e) {
-          logger.info("Given jwt token is expired !!");
-          e.printStackTrace();
+          log.warn("Given jwt token is expired !!");
       } catch (MalformedJwtException e) {
-          logger.info("Some changed has done in token !! Invalid Token");
-          e.printStackTrace();
+          log.warn("Some changes has done in token !! Invalid Token");
       } catch (Exception e) {
-          e.printStackTrace();
-
+          log.info("An unexpected error occurred during token processing", e);
       }
       filterChain.doFilter(request, response);
     }
@@ -71,6 +62,6 @@ public class CustomAuthenticationTokenFilter extends OncePerRequestFilter {
            return tokenWithBearer.substring(7, tokenWithBearer.length());
         }
         return null;
-     }
+    }
 
 }

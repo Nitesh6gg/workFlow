@@ -2,6 +2,7 @@ package com.workFlow.controller;
 
 import com.workFlow.dto.request.CreateUserDTO;
 import com.workFlow.payload.GlobalResponse;
+import com.workFlow.payload.MessageResponse;
 import com.workFlow.repository.UserRepository;
 import com.workFlow.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,8 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<GlobalResponse> createUser (@RequestBody CreateUserDTO requestDto, Principal principal){
-        GlobalResponse response=userService.createUser(requestDto, principal);
+    public ResponseEntity<MessageResponse> createUser (@RequestBody CreateUserDTO requestDto, Principal principal){
+        MessageResponse response=userService.createUser(requestDto, principal);
         return new ResponseEntity<>(response, (HttpStatusCode) response.getHttpStatus());
     }
 

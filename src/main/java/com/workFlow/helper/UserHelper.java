@@ -3,13 +3,12 @@ package com.workFlow.helper;
 import com.workFlow.dto.request.CreateUserDTO;
 import com.workFlow.entity.User;
 import com.workFlow.payload.GlobalResponse;
+import com.workFlow.payload.MessageResponse;
 import com.workFlow.repository.UserRepository;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import java.security.Principal;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -65,25 +64,25 @@ public class UserHelper {
     }
 
 
-    public GlobalResponse checkUserDetails(CreateUserDTO request){
+    public MessageResponse checkUserDetails(CreateUserDTO request){
         Optional<User> username = userRepo.findByUsername(request.getUsername());
         if (username.isPresent()) {
-            return new GlobalResponse("username already in use", HttpStatus.BAD_REQUEST);
+            return new MessageResponse("username already in use", HttpStatus.BAD_REQUEST);
         }
 
         Optional<User> email = userRepo.findByEmail(request.getEmail());
         if (email.isPresent()) {
-            return new GlobalResponse("Email id already registered", HttpStatus.BAD_REQUEST);
+            return new MessageResponse("Email id already registered", HttpStatus.BAD_REQUEST);
         }
 
         Optional<User> phone = userRepo.findByPhone(request.getPhone());
         if (phone.isPresent()) {
-            return new GlobalResponse("Phone no. already registered", HttpStatus.BAD_REQUEST);
+            return new MessageResponse("Phone no. already registered", HttpStatus.BAD_REQUEST);
         }
 
         String password = request.getPassword();
         if (password == null || password.isEmpty()) {
-            return new GlobalResponse("Password cannot be null or empty", HttpStatus.BAD_REQUEST);
+            return new MessageResponse("Password cannot be null or empty", HttpStatus.BAD_REQUEST);
         }
         return null;
     }
