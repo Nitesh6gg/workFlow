@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +72,13 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public List<Map<String,Object>> getAllProjectsForDropdown(Principal principal) {
+        int userType = userHelper.getUserType(principal);
+        List<Map<String,Object>>projects=userType==2 ? projectRepo.findProjectsForDropdown(userHelper.getUserName(principal)):Collections.emptyList();
+        return projects;
+    }
+
+    @Override
     public Page<?> getAllProjectsByStatus(String projectStatus, Pageable pageable, Principal principal) {
         int userType = userHelper.getUserType(principal);
 
@@ -84,6 +92,8 @@ public class ProjectServiceImpl implements ProjectService {
         }else return Page.empty();
         return projectRepo.findAll(specs,pageable);
     }
+
+
 
 
 }

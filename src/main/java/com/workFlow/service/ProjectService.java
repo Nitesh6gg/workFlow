@@ -16,6 +16,9 @@ public interface ProjectService {
 
     Page<?> getAllProjects(Pageable pageable, Principal principal);
 
+    List<Map<String,Object>> getAllProjectsForDropdown(Principal principal);
+
     Page<?>getAllProjectsByStatus(String projectStatus, Pageable pageable, Principal principal);
+
 
 }

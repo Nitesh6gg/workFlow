@@ -19,8 +19,7 @@ public interface ProjectRepository  extends JpaRepository<Project,Integer>, JpaS
     @Query(value = "SELECT p.*,u.`username` AS managerName,u.`email`AS managerEmail FROM project p JOIN `user` u ON p.`managerId`=u.`userId`", nativeQuery = true)
     Page<List<Map<String,Object>>> findAllForSuperAdmin(Pageable pageable);
 
-
-
-
+    @Query(value = "SELECT projectId,projectName FROM project WHERE createdBy = ?",nativeQuery = true)
+    List<Map<String, Object>> findProjectsForDropdown(String createdBy);
 
 }

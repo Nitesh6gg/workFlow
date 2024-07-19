@@ -19,14 +19,21 @@ public class ProjectController {
     private ProjectService projectService;
 
     @PostMapping("/create")
-    ResponseEntity<MessageResponse> createProject(@RequestBody Project project, Principal principal){
+    ResponseEntity<MessageResponse> saveProject(@RequestBody Project project, Principal principal){
         MessageResponse response=projectService.createProject(project,principal);
         return new ResponseEntity<>(response, (HttpStatusCode) response.getHttpStatus());
     }
     @GetMapping("/list")
-    public ResponseEntity<?> getAllProjects (Pageable pageable,Principal principal){
+    public ResponseEntity<?> fetchAllProjects (Pageable pageable,Principal principal){
         return ResponseEntity.ok(projectService.getAllProjects(pageable,principal));
     }
+
+    @GetMapping("/list-drop")
+    public ResponseEntity<?> fetchAllProjectsForDropDown (Principal principal){
+        return ResponseEntity.ok(projectService.getAllProjectsForDropdown(principal));
+    }
+
+
 
     @GetMapping("/status")
     public ResponseEntity<?> getAllProjectsByStatus (@RequestParam String projectStatus,Pageable pageable,Principal principal){
