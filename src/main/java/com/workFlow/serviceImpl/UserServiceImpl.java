@@ -157,6 +157,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<Map<String, Object>> getAllUsersDropdown(Principal principal) {
+        return userRepo.findAllUsersDropdown(userHelper.getUserName(principal));
+    }
+
+    @Override
     public List<Map<String, Object>> getAllManager(int departmentId,Principal principal) {
         //String username=userHelper.getUserName(principal);
         List<Map<String, Object>> allManager = userRepo.getAllManager(departmentId);
@@ -167,6 +172,8 @@ public class UserServiceImpl implements UserService {
         }*/
         return userRepo.getAllManager(departmentId);
     }
+
+
 
 
 }

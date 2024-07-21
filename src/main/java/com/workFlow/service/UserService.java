@@ -20,4 +20,6 @@ public interface UserService {
     Page<?> getAllUsers(Pageable pageable,Principal principal);
 
     List<Map<String, Object>> getAllManager(int departmentId,Principal principal);
+
+    List<Map<String,Object>> getAllUsersDropdown(Principal principal);
 }

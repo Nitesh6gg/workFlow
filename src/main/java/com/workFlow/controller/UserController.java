@@ -41,6 +41,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers(pageable,principal));
     }
 
+    @GetMapping("/drop")
+    public ResponseEntity<?> getAllUsersDropdown (Principal principal){
+        return ResponseEntity.ok(userService.getAllUsersDropdown(principal));
+    }
+
     @GetMapping("/managerDropdown")
     public List<Map<String,Object>> getAllManagerByDepartmentId(@RequestParam int departmentId,Principal principal){
         return userService.getAllManager(departmentId,principal);

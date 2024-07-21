@@ -10,11 +10,15 @@ import com.workFlow.repository.UserRepository;
 import com.workFlow.service.TeamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
+
 @Slf4j
 @Service
 public class TeamServiceImpl implements TeamService {
@@ -48,5 +52,12 @@ public class TeamServiceImpl implements TeamService {
             return new MessageResponse("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @Override
+    public Page<Map<String, Object>> getAllTeams(Principal principal, Pageable pageable) {
+        return teamRepo.getAllTeams(userHelper.getUserName(principal),pageable);
+    }
+
+
 
 }

@@ -42,4 +42,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query(value ="SELECT u.`userId`,u.`username`,p.`title`FROM `user` u JOIN userrole r ON u.`userId`=r.`userId` JOIN `department` d ON r.`departmentId`=d.`id` JOIN `position` p ON r.`positionId`=p.`positionId` WHERE d.`id`=?",nativeQuery = true)
     List<Map<String, Object>> getAllManager(@Param("departmentId") int departmentId);
+
+    @Query(value ="SELECT u.`userId`,u.`username`,d.`name` AS departmentName,p.`title`AS positionName FROM `user` u JOIN `userrole` ur ON u.`userId`=ur.`userId` JOIN `role` r ON ur.`roleId`=r.`roleId` JOIN `department` d ON ur.`departmentId`=d.`id` JOIN `position` p ON ur.`positionId`=p.`positionId` WHERE u.createdBy=?",nativeQuery = true)
+    List<Map<String,Object>> findAllUsersDropdown(String userName);
+
 }
