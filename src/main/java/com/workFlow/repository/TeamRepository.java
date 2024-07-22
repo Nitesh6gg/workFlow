@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Map;
 
 public interface TeamRepository extends JpaRepository<Team,Integer> {
@@ -15,4 +16,6 @@ public interface TeamRepository extends JpaRepository<Team,Integer> {
             "JOIN `user` u ON te.`teamLeader` = u.`userId` WHERE te.`createdBy`=?",nativeQuery = true)
     Page<Map<String,Object>> getAllTeams(String userName, Pageable pageable);
 
+    @Query(value = "SELECT m.`id`,u.`username`,m.`active`,m.`joinDate`,m.`role` FROM `teammember` m JOIN `user` u ON m.`userId`=u.`userId` WHERE m.`teamId`=?",nativeQuery = true)
+    List<Map<String,Object>> findallMembersByTeamId(String teamId);
 }

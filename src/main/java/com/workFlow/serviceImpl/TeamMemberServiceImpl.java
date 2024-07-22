@@ -18,6 +18,7 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 @Slf4j
@@ -62,5 +63,10 @@ public class TeamMemberServiceImpl implements TeamMemberService {
             log.warn("Something went wrong", e);
             return new MessageResponse("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @Override
+    public List<Map<String, Object>> findAllMembersByTeamId(String teamId) {
+        return teamRepo.findallMembersByTeamId(teamId);
     }
 }
