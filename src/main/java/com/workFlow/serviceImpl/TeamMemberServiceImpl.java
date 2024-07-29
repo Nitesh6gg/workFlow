@@ -43,8 +43,18 @@ public class TeamMemberServiceImpl implements TeamMemberService {
             Optional<Team> team = teamRepo.findById(dto.getTeamId());
             if (team.isEmpty()) return new MessageResponse("Team not found", HttpStatus.BAD_REQUEST);
 
+            Team currentTeam = team.get();
+
             List<User> users = userRepo.findAllById(Arrays.asList(dto.getMemberIds()));
             if (users.size()!= dto.getMemberIds().length) return new MessageResponse("Some users not found", HttpStatus.BAD_REQUEST);
+
+            /*List<TeamMember> existingMembers = teamMemberRepo.findByTeamAndUserIdIn(currentTeam, Arrays.asList(dto.getMemberIds()));
+            if (!existingMembers.isEmpty()) {
+                List<Long> existingMemberIds = existingMembers.stream()
+                        .map(member -> member.get)
+                        .collect(Collectors.toList());
+                return new MessageResponse("Some users are already members of the team: " + existingMemberIds, HttpStatus.BAD_REQUEST);
+            }*/
 
             List<TeamMember> members = users.stream().map(user -> {
                 TeamMember member = new TeamMember();

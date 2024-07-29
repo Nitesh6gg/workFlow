@@ -22,4 +22,6 @@ public class Team {
     private String createdBy;
     @OneToMany(mappedBy = "team", cascade =CascadeType.ALL)
     private Set<TeamMember> members = new HashSet<>();
+
+    private String color;
 }

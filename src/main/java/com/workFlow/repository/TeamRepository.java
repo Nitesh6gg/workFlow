@@ -18,4 +18,10 @@ public interface TeamRepository extends JpaRepository<Team,Integer> {
 
     @Query(value = "SELECT m.`id`,u.`username`,m.`active`,m.`joinDate`,m.`role` FROM `teammember` m JOIN `user` u ON m.`userId`=u.`userId` WHERE m.`teamId`=?",nativeQuery = true)
     List<Map<String,Object>> findallMembersByTeamId(String teamId);
+
+    @Query(value = "SELECT t.teamId, t.teamName, u.username AS teamLeader, t.description, t.createdBy,t.color, tm.joinDate, tm.active FROM team t " +
+            "JOIN teammember tm ON t.teamId = tm.teamId JOIN user u ON t.teamLeader = u.userId " +
+            "WHERE tm.userId = ?", nativeQuery = true)
+    Page<Map<String, Object>> fetchAllAssignTeamByUserId(int userId,Pageable pageable);
+
 }

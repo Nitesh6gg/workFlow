@@ -6,11 +6,13 @@ import com.workFlow.payload.MessageResponse;
 import com.workFlow.service.TeamMemberService;
 import com.workFlow.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/team")
@@ -30,7 +32,7 @@ public class TeamController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> fetchAllTeams(Principal principal, Pageable pageable){
+    public ResponseEntity<Page<Map<String,Object>>> fetchAllTeams(Principal principal, Pageable pageable){
         return ResponseEntity.ok(teamService.getAllTeams(principal,pageable));
     }
 
@@ -38,6 +40,11 @@ public class TeamController {
     public ResponseEntity<MessageResponse> addMembers(@RequestBody AddMembersDTO dto, Principal principal){
         MessageResponse response = teamMemberService.addMembersToTeam(dto,principal);
         return new ResponseEntity<>(response, (HttpStatusCode) response.getHttpStatus());
+    }
+
+    @GetMapping("/assign")
+    public ResponseEntity<Page<Map<String,Object>>> fetchAllAssignTeam(Principal principal,Pageable pageable){
+        return ResponseEntity.ok(teamService.fetchAllAssignTeam(principal,pageable));
     }
 
 

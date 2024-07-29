@@ -31,6 +31,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query(value = "SELECT r.roleId FROM `user` u JOIN userrole ur ON u.userId=ur.userId JOIN `role` r ON ur.roleId=r.roleId WHERE u.email=?",nativeQuery = true)
     public int findRoleByEmail(@Param("email") String email);
 
+    @Query(value = "SELECT u.userId FROM `user` u JOIN userrole ur ON u.userId=ur.userId JOIN `role` r ON ur.roleId=r.roleId WHERE u.email=?",nativeQuery = true)
+    int findUserIdByPrincipal(String name);
+
     @Query(value = "SELECT r.roleType FROM `user` u JOIN userrole ur ON u.userId=ur.userId JOIN `role` r ON ur.roleId=r.roleId WHERE u.email=?",nativeQuery = true)
     public String findRoleTypeByEmail(@Param("email") String email);
 
@@ -45,5 +48,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query(value ="SELECT u.`userId`,u.`username`,d.`name` AS departmentName,p.`title`AS positionName FROM `user` u JOIN `userrole` ur ON u.`userId`=ur.`userId` JOIN `role` r ON ur.`roleId`=r.`roleId` JOIN `department` d ON ur.`departmentId`=d.`id` JOIN `position` p ON ur.`positionId`=p.`positionId` WHERE u.createdBy=?",nativeQuery = true)
     List<Map<String,Object>> findAllUsersDropdown(String userName);
+
 
 }

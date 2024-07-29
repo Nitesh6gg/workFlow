@@ -3,6 +3,7 @@ package com.workFlow.serviceImpl;
 import com.workFlow.dto.request.SaveTeamDTO;
 import com.workFlow.entity.Team;
 import com.workFlow.entity.User;
+import com.workFlow.helper.ColorGenerator;
 import com.workFlow.helper.UserHelper;
 import com.workFlow.payload.MessageResponse;
 import com.workFlow.repository.TeamRepository;
@@ -44,6 +45,7 @@ public class TeamServiceImpl implements TeamService {
             newTeam.setDescription(dto.getDescription());
             newTeam.setCreatedBy(userHelper.getUserName(principal));
             newTeam.setCreationDate(String.valueOf(LocalDateTime.now()));
+            newTeam.setColor(ColorGenerator.generateColor());
             teamRepo.save(newTeam);
             return new MessageResponse("Team created", HttpStatus.OK);
 
@@ -58,6 +60,11 @@ public class TeamServiceImpl implements TeamService {
         return teamRepo.getAllTeams(userHelper.getUserName(principal),pageable);
     }
 
+    @Override
+    public Page<Map<String, Object>> fetchAllAssignTeam(Principal principal, Pageable pageable) {
+        int userId = userHelper.getUserId(principal);
+        return teamRepo.fetchAllAssignTeamByUserId(userId, pageable);
+    }
 
 
 }

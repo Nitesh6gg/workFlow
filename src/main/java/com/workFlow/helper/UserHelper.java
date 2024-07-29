@@ -38,6 +38,10 @@ public class UserHelper {
         return userRepo.findUsernameByPrincipal(username);
     }
 
+    public int getUserId(Principal principal) {
+        return userRepo.findUserIdByPrincipal(principal.getName());
+    }
+
 
 
     public GlobalResponse checkUserDetails(Map<String, Object> request){

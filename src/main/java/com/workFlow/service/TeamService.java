@@ -13,5 +13,5 @@ public interface TeamService {
 
     Page<Map<String,Object>> getAllTeams(Principal principal, Pageable pageable);
 
-
+    Page<Map<String,Object>> fetchAllAssignTeam(Principal principal,Pageable pageable);
 }
