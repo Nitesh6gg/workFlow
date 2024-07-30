@@ -65,7 +65,7 @@ public class SecurityConfiguration {
                 		.requestMatchers("/api/user/**").permitAll()
                         .requestMatchers("/api/project/**").permitAll()
                         .requestMatchers("/api/department/**").permitAll()
-                		.requestMatchers("/api/notifications**").permitAll()
+                		.requestMatchers("/api/sse/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated());
         http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
