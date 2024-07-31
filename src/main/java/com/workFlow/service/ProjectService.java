@@ -1,5 +1,6 @@
 package com.workFlow.service;
 
+import com.workFlow.dto.request.ProjectDTO;
 import com.workFlow.entity.Project;
 import com.workFlow.payload.MessageResponse;
 import org.springframework.data.domain.Page;
@@ -12,7 +13,7 @@ import java.util.Map;
 
 public interface ProjectService {
 
-    MessageResponse createProject(Project project, Principal principal);
+    MessageResponse createProject(ProjectDTO projectDTO, Principal principal);
 
     Page<?> getAllProjects(Pageable pageable, Principal principal);
 

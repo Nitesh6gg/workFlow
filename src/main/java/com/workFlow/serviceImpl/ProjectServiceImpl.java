@@ -1,11 +1,14 @@
 package com.workFlow.serviceImpl;
 
+import com.workFlow.dto.request.ProjectDTO;
 import com.workFlow.entity.Project;
+import com.workFlow.entity.User;
 import com.workFlow.helper.PaginationHelper;
 import com.workFlow.helper.UserHelper;
 import com.workFlow.payload.GlobalResponse;
 import com.workFlow.payload.MessageResponse;
 import com.workFlow.repository.ProjectRepository;
+import com.workFlow.repository.UserRepository;
 import com.workFlow.service.ProjectService;
 import com.workFlow.specification.ProjectSpecifications;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -30,22 +30,26 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     private UserHelper userHelper;
+    @Autowired
+    private UserRepository userRepository;
 
 
     @Override
-    public MessageResponse createProject(Project project, Principal principal) {
+    public MessageResponse createProject(ProjectDTO projectDTO, Principal principal) {
         try{
             int userType = userHelper.getUserType(principal);
-            if(userType!=2){
-                return new MessageResponse("Not authorized to perform this action", HttpStatus.UNAUTHORIZED);
-            }
+            if(userType!=2)return new MessageResponse("Not authorized to perform this action", HttpStatus.UNAUTHORIZED);
+
+            Optional<User> userId = userRepository.findByEmail(principal.getName());
+            if(userId.isEmpty()) return new MessageResponse("Manager ID not found", HttpStatus.BAD_REQUEST);
+
             Project newproject=new Project();
-            newproject.setManagerId(project.getManagerId());
-            newproject.setProjectName(project.getProjectName());
-            newproject.setDescription(project.getDescription());
-            newproject.setStatus(project.getStatus());
-            newproject.setStartDate(project.getStartDate());
-            newproject.setEndDate(project.getEndDate());
+            newproject.setManagerId(userId.get());
+            newproject.setProjectName(projectDTO.projectName());
+            newproject.setDescription(projectDTO.description());
+            newproject.setStatus(projectDTO.status());
+            newproject.setStartDate(projectDTO.startDate());
+            newproject.setEndDate(projectDTO.endDate());
             newproject.setCreatedBy(userHelper.getUserName(principal));
             newproject.setCreatedON(String.valueOf(new Date()));
             projectRepo.save(newproject);
@@ -74,8 +78,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<Map<String,Object>> getAllProjectsForDropdown(Principal principal) {
         int userType = userHelper.getUserType(principal);
-        List<Map<String,Object>>projects=userType==2 ? projectRepo.findProjectsForDropdown(userHelper.getUserName(principal)):Collections.emptyList();
-        return projects;
+        return userType==2 ? projectRepo.findProjectsForDropdown(userHelper.getUserName(principal)):Collections.emptyList();
     }
 
     @Override

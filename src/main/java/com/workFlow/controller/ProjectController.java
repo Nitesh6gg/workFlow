@@ -1,5 +1,6 @@
 package com.workFlow.controller;
 
+import com.workFlow.dto.request.ProjectDTO;
 import com.workFlow.entity.Project;
 import com.workFlow.payload.MessageResponse;
 import com.workFlow.service.ProjectService;
@@ -19,8 +20,8 @@ public class ProjectController {
     private ProjectService projectService;
 
     @PostMapping("/create")
-    ResponseEntity<MessageResponse> saveProject(@RequestBody Project project, Principal principal){
-        MessageResponse response=projectService.createProject(project,principal);
+    ResponseEntity<MessageResponse> saveProject(@RequestBody ProjectDTO projectDTO, Principal principal){
+        MessageResponse response=projectService.createProject(projectDTO,principal);
         return new ResponseEntity<>(response, (HttpStatusCode) response.getHttpStatus());
     }
     @GetMapping("/list")
