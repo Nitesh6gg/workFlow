@@ -4,7 +4,6 @@ import com.workFlow.dto.request.CreateUserDTO;
 import com.workFlow.entity.*;
 import com.workFlow.helper.PaginationHelper;
 import com.workFlow.helper.UserHelper;
-import com.workFlow.payload.GlobalResponse;
 import com.workFlow.payload.MessageResponse;
 import com.workFlow.repository.*;
 import com.workFlow.service.UserService;
@@ -46,54 +45,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public GlobalResponse createAdmin(Map<String, Object> requestBody, Principal principal) {
-        try {
-            int userType = userHelper.getUserType(principal);
-            if (userType != 1) {
-                return new GlobalResponse("You are not authorized to perform this action", HttpStatus.UNAUTHORIZED);
-            }
-            //check username,email,phone not already registered
-            GlobalResponse error=userHelper.checkUserDetails(requestBody);
-            if(error!=null) return error;
-
-            User newUser = new User();
-            newUser.setUuid(UUID.randomUUID().toString());
-            newUser.setUsername(requestBody.get("username").toString());
-            newUser.setEmail(requestBody.get("email").toString());
-            newUser.setPhone(requestBody.get("phone").toString());
-            newUser.setCreatedBy(userHelper.getUserName(principal));
-            newUser.setFirstName(requestBody.get("firstName").toString());
-            newUser.setLastName(requestBody.get("lastName").toString());
-            newUser.setCreatedON(String.valueOf(new Date()));
-            newUser.setPassword(passwordEncoder.encode(requestBody.get("password").toString()));
-
-            User savedUser = userRepo.save(newUser);
-
-            Optional<Role> roleOptional = roleRepo.findByRoleType("ROLE_ADMIN");
-            if (!roleOptional.isPresent()) {
-                return new GlobalResponse("Admin role not found", HttpStatus.BAD_REQUEST);
-            }
-            Role role = roleOptional.get();
-
-            UserRole userRole = new UserRole();
-            userRole.setRoleId(role.getRoleId());
-            userRole.setUserId(savedUser.getUserId());
-            userRole.setCreatedBy(userHelper.getUserName(principal));
-            userRole.setCreatedON(String.valueOf(new Date()));
-            userRoleRepo.save(userRole);
-
-            return new GlobalResponse("Registration successful", HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new GlobalResponse("Something went wrong!", e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Override
-    @Transactional
     public MessageResponse createUser(CreateUserDTO requestDto, Principal principal) {
         try {
             int userType = userHelper.getUserType(principal);
-            if (userType != 2) {
+            if (userType==3) {
                 return new MessageResponse("You are not authorized to perform this action", HttpStatus.UNAUTHORIZED);
             }
             // Check username, email, phone not already registered
@@ -118,25 +73,24 @@ public class UserServiceImpl implements UserService {
             }
             Role role = roleOptional.get();
 
-            Optional<Position> positionOptional = positionRepo.findById(requestDto.getPosition());
-            if (positionOptional.isEmpty()) {
-                return new MessageResponse("Position not found", HttpStatus.BAD_REQUEST);
-            }
-            Position position = positionOptional.get();
-
-            Optional<Department> departmentOptional = departmentRepo.findById(requestDto.getDepartment());
-            if (departmentOptional.isEmpty()) {
-                return new MessageResponse("Department not found", HttpStatus.BAD_REQUEST);
-            }
-            Department department = departmentOptional.get();
-
             UserRole newRole = new UserRole();
             newRole.setUserId(savedUser.getUserId());
             newRole.setRoleId(role.getRoleId());
-            newRole.setPositionId(position);
-            newRole.setDepartmentId(department);
             newRole.setCreatedBy(userHelper.getUserName(principal));
             newRole.setCreatedON(String.valueOf(LocalDateTime.now()));
+
+            if(userType==2){
+                Optional<Position> positionOptional = positionRepo.findById(requestDto.getPosition());
+                if (positionOptional.isEmpty()) return new MessageResponse("Position not found", HttpStatus.BAD_REQUEST);
+                Position position = positionOptional.get();
+
+                Optional<Department> departmentOptional = departmentRepo.findById(requestDto.getDepartment());
+                if (departmentOptional.isEmpty()) return new MessageResponse("Department not found", HttpStatus.BAD_REQUEST);
+                Department department = departmentOptional.get();
+
+                newRole.setPositionId(position);
+                newRole.setDepartmentId(department);
+            }
             userRoleRepo.save(newRole);
             return new MessageResponse("Registration successful", HttpStatus.CREATED);
         } catch (Exception e) {

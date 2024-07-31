@@ -1,7 +1,6 @@
 package com.workFlow.controller;
 
 import com.workFlow.dto.request.CreateUserDTO;
-import com.workFlow.payload.GlobalResponse;
 import com.workFlow.payload.MessageResponse;
 import com.workFlow.repository.UserRepository;
 import com.workFlow.service.UserService;
@@ -24,12 +23,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/createAdmin")
-    public ResponseEntity<GlobalResponse> createAdmin (@RequestBody Map<String,Object> requestBody, Principal principal){
-         GlobalResponse response=userService.createAdmin(requestBody, principal);
-         return new ResponseEntity<>(response, (HttpStatusCode) response.getHttpStatus());
-    }
-
     @PostMapping("/create")
     public ResponseEntity<MessageResponse> createUser (@RequestBody CreateUserDTO requestDto, Principal principal){
         MessageResponse response=userService.createUser(requestDto, principal);
@@ -50,7 +43,5 @@ public class UserController {
     public List<Map<String,Object>> getAllManagerByDepartmentId(@RequestParam int departmentId,Principal principal){
         return userService.getAllManager(departmentId,principal);
     }
-
-
 
 }
