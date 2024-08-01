@@ -11,6 +11,7 @@ import com.workFlow.repository.ProjectRepository;
 import com.workFlow.repository.UserRepository;
 import com.workFlow.service.ProjectService;
 import com.workFlow.specification.ProjectSpecifications;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.*;
-
+@Slf4j
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
@@ -40,7 +41,7 @@ public class ProjectServiceImpl implements ProjectService {
             int userType = userHelper.getUserType(principal);
             if(userType!=2)return new MessageResponse("Not authorized to perform this action", HttpStatus.UNAUTHORIZED);
 
-            Optional<User> userId = userRepository.findByEmail(principal.getName());
+            Optional<User> userId = userRepository.findById((projectDTO.managerId()));
             if(userId.isEmpty()) return new MessageResponse("Manager ID not found", HttpStatus.BAD_REQUEST);
 
             Project newproject=new Project();
@@ -55,7 +56,7 @@ public class ProjectServiceImpl implements ProjectService {
             projectRepo.save(newproject);
             return new MessageResponse("created successfully",HttpStatus.OK);
         }catch(Exception e){
-            e.printStackTrace();
+            log.warn("something went wrong",e);
             return new MessageResponse("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);}
 
     }

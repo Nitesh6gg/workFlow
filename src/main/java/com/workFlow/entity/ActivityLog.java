@@ -1,9 +1,6 @@
 package com.workFlow.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.modelmapper.internal.bytebuddy.dynamic.loading.InjectionClassLoader;
@@ -11,6 +8,7 @@ import org.modelmapper.internal.bytebuddy.dynamic.loading.InjectionClassLoader;
 @Entity
 @Getter
 @Setter
+@Table(name = "activitylog")
 public class ActivityLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
