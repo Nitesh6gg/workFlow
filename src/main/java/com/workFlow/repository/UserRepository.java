@@ -22,10 +22,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     Optional<User> findByPhone(String phone);
 
-    @Query(value = "SELECT u.`userId`,u.`username`,u.`email`,u.`firstName`,u.`lastName`,u.`phone`,u.`enabled`,u.`createdBy`,u.`createdON`,r.`roleType`,d.`name` AS departmentName,p.`title`AS positionName FROM `user` u JOIN `userrole` ur ON u.`userId`=ur.`userId` JOIN `role` r ON ur.`roleId`=r.`roleId` JOIN `department` d ON ur.`departmentId`=d.`id` JOIN `position` p ON ur.`positionId`=p.`positionId` WHERE u.createdBy= :username", nativeQuery = true)
+    @Query(value = "SELECT u.`userId`,u.`imageUrl`,u.`username`,u.`email`,u.`firstName`,u.`lastName`,u.`phone`,u.`enabled`,u.`createdBy`,u.`createdON`,r.`roleType`,d.`name` AS departmentName,p.`title`AS positionName FROM `user` u JOIN `userrole` ur ON u.`userId`=ur.`userId` JOIN `role` r ON ur.`roleId`=r.`roleId` JOIN `department` d ON ur.`departmentId`=d.`id` JOIN `position` p ON ur.`positionId`=p.`positionId` WHERE u.createdBy= :username", nativeQuery = true)
     Page<List<Map<String,Object>>> findAllForAdmin(@Param("username") String username, Pageable pageable);
 
-    @Query(value = "SELECT u.`userId`,u.`username`,u.`email`,u.`firstName`,u.`lastName`,u.`phone`,u.`enabled`,u.`createdBy`,u.`createdON`,r.`roleType`,d.`name` AS departmentName,p.`title`AS positionName FROM `user` u JOIN `userrole` ur ON u.`userId`=ur.`userId` JOIN `role` r ON ur.`roleId`=r.`roleId` JOIN `department` d ON ur.`departmentId`=d.`id` JOIN `position` p ON ur.`positionId`=p.`positionId`", nativeQuery = true)
+    @Query(value = "SELECT u.`userId`,u.`imageUrl`,u.`username`,u.`email`,u.`firstName`,u.`lastName`,u.`phone`,u.`enabled`,u.`createdBy`,u.`createdON`,r.`roleType`,d.`name` AS departmentName,p.`title`AS positionName FROM `user` u JOIN `userrole` ur ON u.`userId`=ur.`userId` JOIN `role` r ON ur.`roleId`=r.`roleId` JOIN `department` d ON ur.`departmentId`=d.`id` JOIN `position` p ON ur.`positionId`=p.`positionId`", nativeQuery = true)
     Page<List<Map<String,Object>>> findAllForSuperAdmin(Pageable pageable);
 
     @Query(value = "SELECT r.roleId FROM `user` u JOIN userrole ur ON u.userId=ur.userId JOIN `role` r ON ur.roleId=r.roleId WHERE u.email=?",nativeQuery = true)
@@ -49,5 +49,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query(value ="SELECT u.`userId`,u.`username`,d.`name` AS departmentName,p.`title`AS positionName FROM `user` u JOIN `userrole` ur ON u.`userId`=ur.`userId` JOIN `role` r ON ur.`roleId`=r.`roleId` JOIN `department` d ON ur.`departmentId`=d.`id` JOIN `position` p ON ur.`positionId`=p.`positionId` WHERE u.createdBy=?",nativeQuery = true)
     List<Map<String,Object>> findAllUsersDropdown(String userName);
 
-
+    @Query(value ="SELECT `firstName`,`lastName`,`email`,`username`,`imageUrl` FROM `user` WHERE `username`=?",nativeQuery = true)
+    Map<String, Object> findProfileDetails(String userName);
 }

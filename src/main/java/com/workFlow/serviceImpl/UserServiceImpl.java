@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -113,6 +115,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<Map<String, Object>> getAllUsersDropdown(Principal principal) {
         return userRepo.findAllUsersDropdown(userHelper.getUserName(principal));
+    }
+
+    @Override
+    public Map<String, Object> getUserProfileDetails(Principal principal) {
+        System.out.println("priv "+userHelper.getUserName(principal));
+        return userRepo.findProfileDetails(userHelper.getUserName(principal));
+    }
+
+    @Override
+    public MessageResponse uploadImage(MultipartFile file, Principal principal) {
+
+        return null;
     }
 
     @Override

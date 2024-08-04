@@ -7,6 +7,7 @@ import com.workFlow.dto.request.CreateUserDTO;
 import com.workFlow.payload.MessageResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
 
@@ -14,7 +15,13 @@ public interface UserService {
 
     Page<?> getAllUsers(Pageable pageable,Principal principal);
 
+    List<Map<String,Object>> getAllUsersDropdown(Principal principal);
+
+    Map<String, Object> getUserProfileDetails(Principal principal);
+
     List<Map<String, Object>> getAllManager(int departmentId,Principal principal);
 
-    List<Map<String,Object>> getAllUsersDropdown(Principal principal);
+    MessageResponse uploadImage(MultipartFile file, Principal principal);
+
+
 }

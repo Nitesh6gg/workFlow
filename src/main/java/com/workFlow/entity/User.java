@@ -30,6 +30,7 @@ public class User {
     @JsonIgnore
     private String password;
     private Boolean enabled=true;
+    private String imageUrl;
     private String createdBy;
     private String updatedBy;
     private String createdON;

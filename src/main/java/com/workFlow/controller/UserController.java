@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +31,20 @@ public class UserController {
         return new ResponseEntity<>(response, (HttpStatusCode) response.getHttpStatus());
     }
 
+    @PostMapping("/upload-img")
+    public ResponseEntity<MessageResponse> uploadImage (@RequestParam("file") MultipartFile file, Principal principal){
+        MessageResponse response=userService.uploadImage(file, principal);
+        return new ResponseEntity<>(response, (HttpStatusCode) response.getHttpStatus());
+    }
+
     @GetMapping("/list")
     public ResponseEntity<?> getAllUsers (Pageable pageable,Principal principal){
         return ResponseEntity.ok(userService.getAllUsers(pageable,principal));
+    }
+
+    @GetMapping("/profileDetails")
+    public ResponseEntity<Map<String,Object>> getUserProfileDetails(Principal principal){
+        return ResponseEntity.ok(userService.getUserProfileDetails(principal));
     }
 
     @GetMapping("/drop")
