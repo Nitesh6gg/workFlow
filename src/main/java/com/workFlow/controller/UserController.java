@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class UserController {
         return new ResponseEntity<>(response, (HttpStatusCode) response.getHttpStatus());
     }
 
-    @PostMapping("/upload-img")
+    @PostMapping("/upload-profileImg")
     public ResponseEntity<MessageResponse> uploadImage (@RequestParam("file") MultipartFile file, Principal principal){
         MessageResponse response=userService.uploadImage(file, principal);
         return new ResponseEntity<>(response, (HttpStatusCode) response.getHttpStatus());

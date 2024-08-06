@@ -6,6 +6,7 @@ import com.workFlow.helper.PaginationHelper;
 import com.workFlow.helper.UserHelper;
 import com.workFlow.payload.MessageResponse;
 import com.workFlow.repository.*;
+import com.workFlow.service.ImageService;
 import com.workFlow.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,7 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -31,6 +31,9 @@ public class UserServiceImpl implements UserService {
     private final DepartmentRepository departmentRepo;
     private final RoleRepository roleRepo;
     private final UserRoleRepository userRoleRepo;
+
+    @Autowired
+    private ImageService imageService;
 
     @Autowired
     public UserServiceImpl(UserHelper userHelper, PaginationHelper paginationHelper, BCryptPasswordEncoder passwordEncoder,
@@ -119,14 +122,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<String, Object> getUserProfileDetails(Principal principal) {
-        System.out.println("priv "+userHelper.getUserName(principal));
         return userRepo.findProfileDetails(userHelper.getUserName(principal));
     }
 
     @Override
     public MessageResponse uploadImage(MultipartFile file, Principal principal) {
-
-        return null;
+        Optional<User> byUsername = userRepo.findByUsername(userHelper.getUserName(principal));
+        if (byUsername.isPresent()) {
+            User user = byUsername.get();
+            user.setImageUrl(imageService.processImageAndGenerateUrl(file));
+            userRepo.save(user);
+            return new MessageResponse("Image uploaded", HttpStatus.OK);
+        } else {
+            return new MessageResponse("User not found", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Override

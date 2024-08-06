@@ -61,13 +61,11 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
 //                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
 //                        .requestMatchers("/api/user/**").hasRole("USER")
-                		.requestMatchers("/api/admin/**").permitAll()
-                		.requestMatchers("/api/user/**").permitAll()
-                        .requestMatchers("/api/project/**").permitAll()
-                        .requestMatchers("/api/department/**").permitAll()
                 		.requestMatchers("/api/sse/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-                        .anyRequest().authenticated());
+                        .requestMatchers("/img/**").permitAll()
+                        .anyRequest().authenticated()
+                );
         http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
