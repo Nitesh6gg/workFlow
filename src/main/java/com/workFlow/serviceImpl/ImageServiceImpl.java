@@ -5,10 +5,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.UUID;
+
 @Slf4j
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -23,7 +33,7 @@ public class ImageServiceImpl implements ImageService {
     public String processImageAndGenerateUrl(MultipartFile file) {
         try {
             // Save the file to the specified directory
-            String fileName = file.getOriginalFilename();
+            String fileName = UUID.randomUUID().toString();
             Path targetLocation = Paths.get(uploadDir).resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             // Generate the different  URL for the saved file for secured endpoint
