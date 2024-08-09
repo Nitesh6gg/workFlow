@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 @RequestMapping("/img")
 public class ImageController {
 
-    @Value("${profileImageUpload.dir}")
+    @Value("${image.storage.path}")
     private String uploadDir;
 
     @GetMapping("/profile")
