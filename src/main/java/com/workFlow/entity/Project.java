@@ -20,6 +20,7 @@ public class Project {
     private String description;
     private String status;
     private String progressBar;
+    private String barColor;
     private String startDate;
     private String endDate;
     private String createdBy;

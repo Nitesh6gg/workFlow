@@ -51,6 +51,8 @@ public class ProjectServiceImpl implements ProjectService {
             newproject.setStatus(projectDTO.status());
             newproject.setStartDate(projectDTO.startDate());
             newproject.setEndDate(projectDTO.endDate());
+            newproject.setStatus("Initiation");
+            newproject.setProgressBar("0%");
             newproject.setCreatedBy(userHelper.getUserName(principal));
             newproject.setCreatedON(String.valueOf(new Date()));
             projectRepo.save(newproject);

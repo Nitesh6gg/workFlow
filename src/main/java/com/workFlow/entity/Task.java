@@ -21,6 +21,8 @@ public class Task {
 
     private String status;
     private String priority;
+    private String progressBar;
+    private String barColor;
 
     @ManyToOne
     @JoinColumn(name = "assignUserId")

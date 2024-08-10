@@ -141,17 +141,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<Map<String, Object>> getAllManager(int departmentId,Principal principal) {
-        //String username=userHelper.getUserName(principal);
-        List<Map<String, Object>> allManager = userRepo.getAllManager(departmentId);
-       /* if(allManager.isEmpty()) {
-            Map<String, Object> response=new HashMap<String, Object>();
-            response.put("message","No manager found");
-            return Collections.singletonList(response);
-        }*/
-        return userRepo.getAllManager(departmentId);
+        return userRepo.getAllManager(userHelper.getUserName(principal), departmentId);
     }
-
-
 
 
 }

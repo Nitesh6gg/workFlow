@@ -56,6 +56,8 @@ public class TaskServiceImpl  implements TaskService {
             newTask.setStatus(dto.getStatus());
             newTask.setAssignUserId(byId.get());
             newTask.setPriority(dto.getPriority());
+            newTask.setProgressBar("0%");
+            newTask.setBarColor("red");
             newTask.setStartDate(dto.getStartDate());
             newTask.setDueDate(dto.getDueDate());
             newTask.setCreatedBy(userHelper.getUserName(principal));
