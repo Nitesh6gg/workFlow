@@ -38,7 +38,7 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public List<String> getActiveSessions() {
-        List<Object> allPrincipals = sessionRegistry.getAllPrincipals();
+       /* List<Object> allPrincipals = sessionRegistry.getAllPrincipals();
         List<String> activeSessions = new ArrayList<>();
 
         List<Object> allPrincipalss = sessionRegistry.getAllPrincipals();
@@ -53,8 +53,19 @@ public class SessionServiceImpl implements SessionService {
                 activeSessions.add("User: " + principal + " - Session ID: " + session.getSessionId() + " - Last Request: " + session.getLastRequest());
             }
         }
-        return activeSessions;
+        return activeSessions;*/
+        List<String> users = new ArrayList<>();
+        List<Object> principals = sessionRegistry.getAllPrincipals();
+
+        for (Object principal : principals) {
+            List<SessionInformation> sessionsInfo = sessionRegistry.getAllSessions(principal, false);
+            if (!sessionsInfo.isEmpty()) {
+                users.add(((UserDetailsImpl) principal).getUsername());
+            }
+        }
+        return users;
     }
+    
 
    /* public void logSessionDetails(HttpServletRequest request) {
         System.out.println("authType: " + request.getAuthType());

@@ -56,9 +56,9 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                         .maximumSessions(1)
-                        .sessionRegistry(sessionRegistry())
+                        .sessionRegistry(sessionRegistry())  // Register the session registry here
                         .expiredUrl("/session-expired")
-                        .maxSessionsPreventsLogin(true))
+                        .maxSessionsPreventsLogin(true))  // Prevent new logins when session limit is reached
                 .authorizeHttpRequests(auth -> auth
 //                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
 //                        .requestMatchers("/api/user/**").hasRole("USER")
