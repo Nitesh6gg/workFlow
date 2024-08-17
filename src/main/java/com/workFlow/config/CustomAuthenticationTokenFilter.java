@@ -13,12 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
-@Component
 @Slf4j
 public class CustomAuthenticationTokenFilter extends OncePerRequestFilter {
 
@@ -39,8 +37,7 @@ public class CustomAuthenticationTokenFilter extends OncePerRequestFilter {
             String username = jwtUtil.extractUsername(jwtToken);
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
-            UsernamePasswordAuthenticationToken authentication  = new UsernamePasswordAuthenticationToken(
-                  userDetails, null, userDetails.getAuthorities());
+            UsernamePasswordAuthenticationToken authentication  = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication );
          }
       } catch (IllegalArgumentException e) {

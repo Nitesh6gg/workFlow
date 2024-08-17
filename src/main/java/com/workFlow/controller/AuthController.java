@@ -69,6 +69,8 @@ public class AuthController {
 
 		        String jwtToken = jwtUtil.getToken(userDetails);//generate token
 
+				sessionService.logSessionDetails(req);
+
 				sessionService.saveActivityLog(userDetails.getUsername(),req);//saving session
 
 				String userRole=userHelper.getUserType(userDetails.getUsername());//find userRole by username(email)

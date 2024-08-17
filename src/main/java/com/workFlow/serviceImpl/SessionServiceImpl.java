@@ -7,6 +7,7 @@ import com.workFlow.service.SessionService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,11 @@ public class SessionServiceImpl implements SessionService {
         List<Object> allPrincipals = sessionRegistry.getAllPrincipals();
         List<String> activeSessions = new ArrayList<>();
 
+        List<Object> allPrincipalss = sessionRegistry.getAllPrincipals();
+        for (Object principal : allPrincipalss) {
+            System.out.println("Principal is : " + principal);
+        }
+
         for (Object principal : allPrincipals) {
             List<SessionInformation> sessions = sessionRegistry.getAllSessions(principal, false);
             for (SessionInformation session : sessions) {
@@ -50,14 +56,14 @@ public class SessionServiceImpl implements SessionService {
         return activeSessions;
     }
 
-    public void logSessionDetails(HttpServletRequest request) {
+   /* public void logSessionDetails(HttpServletRequest request) {
         System.out.println("authType: " + request.getAuthType());
         System.out.println("remoteAddr: " + request.getRemoteAddr());
         System.out.println("remoteHost: " + request.getRemoteHost());
         System.out.println("remotePort: " + request.getRemotePort());
         System.out.println("sessionId: " + request.getSession().getId());
         System.out.println("sessionTime: " + request.getSession().getLastAccessedTime());
-    }
+    }*/
 
     @Override
     public void saveActivityLog(String username, HttpServletRequest request) {
@@ -68,6 +74,18 @@ public class SessionServiceImpl implements SessionService {
         log.setLastLogin(String.valueOf(new Date()));
         activityRepo.save(log);
     }
+
+    public void logSessionDetails(HttpServletRequest request) {
+        String requestSessionId = request.getSession().getId();
+        System.out.println("Request Session ID: " + requestSessionId);
+
+
+        List<SessionInformation> sessions = sessionRegistry.getAllSessions(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), false);
+        for (SessionInformation session : sessions) {
+            System.out.println("SessionRegistry Session ID: " + session.getSessionId());
+        }
+    }
+
 
 
 }
