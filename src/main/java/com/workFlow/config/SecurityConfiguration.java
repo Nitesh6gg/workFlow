@@ -48,6 +48,14 @@ public class SecurityConfiguration {
         return new RegisterSessionAuthenticationStrategy(sessionRegistry());
     }
 
+    private static final String[] SWAGGER_WHITELIST={
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/swagger-resources/**",
+            "/v3/api-docs/**"
+    };
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -64,6 +72,7 @@ public class SecurityConfiguration {
 //                        .requestMatchers("/api/user/**").hasRole("USER")
                         .requestMatchers( "/index.html", "/img/**","/api/sse/**").permitAll()
                         .requestMatchers("/api/auth/login").permitAll()
+                                .requestMatchers(SWAGGER_WHITELIST).permitAll()
                         .anyRequest().authenticated()
                 );
         http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
