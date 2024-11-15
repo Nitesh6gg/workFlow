@@ -75,19 +75,19 @@ public class JwtUtil {
         final Date createdDate = new Date();
         final Date expiryDate = new Date(createdDate.getTime() + (expTime * 30)); 
 
-        List<Map<String,Object>> _claims = new ArrayList<>();
+        List<Map<String,Object>> claimss = new ArrayList<>();
         Map<String,Object> claim = new HashMap<>();
         claim.put("authority", "RERRESH");
-        _claims.add(claim);
+        claimss.add(claim);
 
-        String token =  Jwts
+       return Jwts
                    .builder()
                    .setClaims(claim)
                    .setSubject(username)
                    .setIssuedAt(createdDate)
                    .setExpiration(expiryDate)
                    .signWith(key(), SignatureAlgorithm.HS256).compact();
-            return token;
+
     }
 
     public boolean validateToken(String token) throws Exception{

@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @AllArgsConstructor
 public class SwaggerConfig {
 
-    private final AppConfig appConfig;
+    private final AppConfigs appConfigs;
 
     @Bean
     public OpenAPI customOpenAPI() {
@@ -21,6 +21,6 @@ public class SwaggerConfig {
                         .description("API for My Workflow Application")
                         .version("1.0")
                         .contact(new Contact().name("Support").email("nitesh6g@gmail.com").url("https://gmail.com")))
-                .addServersItem(new Server().url(appConfig.getServer().getUrl()).description(appConfig.getServer().getName()));
+                .addServersItem(new Server().url(appConfigs.server().url()).description(appConfigs.server().name()));
     }
 }
