@@ -30,6 +30,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(badRequest, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorResponses> handleRuntimeException(HttpServletRequest request, RuntimeException ex) {
+        ErrorResponses errorResponse = new ErrorResponses(ex.getMessage(), "Runtime exception occurred!", request.getRequestURI(), request.getMethod(), HttpStatus.INTERNAL_SERVER_ERROR.value(), LocalDateTime.now(), generateTraceId());
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponses> handleIllegalArgumentException(HttpServletRequest request, IllegalArgumentException ex) {
         ErrorResponses errorResponse = new ErrorResponses(ex.getMessage(),"Invalid argument!",request.getRequestURI(), request.getMethod(),HttpStatus.BAD_REQUEST.value(), LocalDateTime.now(), generateTraceId());
