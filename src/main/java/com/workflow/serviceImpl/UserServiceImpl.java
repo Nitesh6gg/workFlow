@@ -2,13 +2,12 @@ package com.workflow.serviceImpl;
 
 import com.workflow.dto.request.CreateUserDTO;
 import com.workflow.entity.*;
-import com.workflow.helper.PaginationHelper;
 import com.workflow.helper.UserHelper;
 import com.workflow.payload.MessageResponse;
 import com.workflow.repository.*;
 import com.workflow.service.ImageService;
 import com.workflow.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -21,32 +20,17 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserHelper userHelper;
-    private final PaginationHelper paginationHelper;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository userRepo;
     private final PositionRepository positionRepo;
     private final DepartmentRepository departmentRepo;
     private final RoleRepository roleRepo;
     private final UserRoleRepository userRoleRepo;
-
-    @Autowired
-    private ImageService imageService;
-
-    @Autowired
-    public UserServiceImpl(UserHelper userHelper, PaginationHelper paginationHelper, BCryptPasswordEncoder passwordEncoder,
-                           UserRepository userRepo, PositionRepository positionRepo, DepartmentRepository departmentRepo, RoleRepository roleRepo, UserRoleRepository userRoleRepo) {
-        this.userHelper = userHelper;
-        this.paginationHelper = paginationHelper;
-        this.passwordEncoder = passwordEncoder;
-        this.userRepo = userRepo;
-        this.positionRepo = positionRepo;
-        this.departmentRepo = departmentRepo;
-        this.roleRepo = roleRepo;
-        this.userRoleRepo = userRoleRepo;
-    }
+    private final ImageService imageService;
 
     @Override
     @Transactional
