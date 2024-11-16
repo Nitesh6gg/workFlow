@@ -1,4 +1,4 @@
-package com.workflow.serviceImpl;
+package com.workflow.serviceimpl;
 
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package com.workflow.serviceImpl;
+package com.workflow.serviceimpl;
 
 import com.workflow.entity.User;
 import org.springframework.security.core.GrantedAuthority;

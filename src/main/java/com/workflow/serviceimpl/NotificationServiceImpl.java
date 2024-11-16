@@ -1,4 +1,4 @@
-package com.workflow.serviceImpl;
+package com.workflow.serviceimpl;
 
 import com.workflow.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;

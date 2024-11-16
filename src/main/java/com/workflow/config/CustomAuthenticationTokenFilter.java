@@ -1,6 +1,6 @@
 package com.workflow.config;
 
-import com.workflow.serviceImpl.UserDetailsServiceImpl;
+import com.workflow.serviceimpl.UserDetailsServiceImpl;
 import com.workflow.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;

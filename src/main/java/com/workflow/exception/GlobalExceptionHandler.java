@@ -42,6 +42,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(UnAuthoriseException.class)
+    public ResponseEntity<ErrorResponses> handleUnauthorisedException(HttpServletRequest request, Exception ex) {
+        ErrorResponses errorResponse = new ErrorResponses(ex.getMessage(), "Unauthorized access!", request.getRequestURI(), request.getMethod(), HttpStatus.UNAUTHORIZED.value(), LocalDateTime.now(), generateTraceId());
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<ErrorResponses> handleNullPointerException(HttpServletRequest request, NullPointerException ex) {
         ErrorResponses errorResponse = new ErrorResponses(ex.getMessage(), "Null pointer encountered!", request.getRequestURI(), request.getMethod(), HttpStatus.INTERNAL_SERVER_ERROR.value(), LocalDateTime.now(), generateTraceId());

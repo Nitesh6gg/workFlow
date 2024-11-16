@@ -1,7 +1,7 @@
 package com.workflow.controller;
 
 import com.workflow.service.NotificationService;
-import com.workflow.serviceImpl.SSEService;
+import com.workflow.serviceimpl.SSEService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.*;

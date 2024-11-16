@@ -7,7 +7,7 @@ import com.workflow.helper.UserHelper;
 import com.workflow.repository.ActivityRepository;
 import com.workflow.repository.UserRepository;
 import com.workflow.service.SessionService;
-import com.workflow.serviceImpl.UserDetailsServiceImpl;
+import com.workflow.serviceimpl.UserDetailsServiceImpl;
 import com.workflow.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;

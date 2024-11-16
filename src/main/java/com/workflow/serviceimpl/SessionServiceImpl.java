@@ -1,4 +1,4 @@
-package com.workflow.serviceImpl;
+package com.workflow.serviceimpl;
 
 import com.workflow.entity.ActivityLog;
 import com.workflow.payload.MessageResponse;

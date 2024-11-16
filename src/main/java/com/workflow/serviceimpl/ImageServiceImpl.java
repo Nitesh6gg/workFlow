@@ -1,4 +1,4 @@
-package com.workflow.serviceImpl;
+package com.workflow.serviceimpl;
 
 import com.workflow.service.ImageService;
 import lombok.extern.slf4j.Slf4j;

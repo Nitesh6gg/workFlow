@@ -1,4 +1,4 @@
-package com.workflow.serviceImpl;
+package com.workflow.serviceimpl;
 
 import com.workflow.dto.request.AddMembersDTO;
 import com.workflow.entity.Team;

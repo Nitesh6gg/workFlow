@@ -1,4 +1,4 @@
-package com.workflow.serviceImpl;
+package com.workflow.serviceimpl;
 
 import com.workflow.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;

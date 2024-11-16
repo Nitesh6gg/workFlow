@@ -1,4 +1,4 @@
-package com.workflow.serviceImpl;
+package com.workflow.serviceimpl;
 
 import com.workflow.dto.request.CreateUserDTO;
 import com.workflow.entity.*;
@@ -114,7 +114,6 @@ public class UserServiceImpl implements UserService {
         Optional<User> byUsername = userRepo.findByUsername(userHelper.getUserName(principal));
         if (byUsername.isPresent()) {
             User user = byUsername.get();
-            String uuid = user.getUuid();
             user.setImageUrl(imageService.processImageAndGenerateUrl(file));
             userRepo.save(user);
             return new MessageResponse("Image uploaded", HttpStatus.OK);
