@@ -2,6 +2,7 @@ package com.workflow.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.Fetch;
 
 @Data
 @Entity

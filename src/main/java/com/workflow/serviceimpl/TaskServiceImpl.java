@@ -77,47 +77,9 @@ public class TaskServiceImpl  implements TaskService {
     }
 
     @Override
-    public MessageResponse assignTaskToUser(TaskAssignDto dto, Principal principal) throws BadRequestException, UnAuthoriseException {
-        try {
-            Optional<UserRole> byId = userRoleRepo.findById(1);
-
-            UserRole userRole = byId.get();
-            if(userRole.getPositionId().getPositionId()!=5){
-                TaskAssign newTask=new TaskAssign();
-                newTask.setAssignedBy(userHelper.getUserId(principal));
-               // newTask.set
-
-            }
-            throw new UnAuthoriseException("you are not Authorise");
-
-        }catch (Exception e){
-            log.warn("Something went wrong", e);
-            return new MessageResponse("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-    }
-
-
-
-
-
-    @Override
-    public Page<Task> assignTask(String priority, Principal principal, Pageable pageable) {
-        try{
+    public Page<Map<String,Object>> getAssignTask(String priority, Principal principal, Pageable pageable) {
             int userId = userHelper.getUserId(principal);
-            // Build the dynamic specification
-            Specification<Task> specification = Specification.where(TaskSpecifications.assignTo(userId))
-                    .and(TaskSpecifications.getPriority(priority));
-            return taskRepo.findAll(specification, pageable);
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
-
+            return taskRepo.findAllAssignTaskByPriority(userId,priority,pageable);
     }
-
-
-
 
 }

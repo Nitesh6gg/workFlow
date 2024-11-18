@@ -3,9 +3,11 @@ package com.workflow.controller;
 import com.workflow.dto.request.SaveTaskDTO;
 import com.workflow.dto.request.TaskAssignDto;
 import com.workflow.entity.Task;
+import com.workflow.exception.UnAuthoriseException;
 import com.workflow.payload.MessageResponse;
 import com.workflow.service.TaskService;
 import lombok.AllArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -32,21 +34,13 @@ public class TaskController {
     }
 
     @GetMapping("/list")
-    ResponseEntity<?> fetchTasks(@RequestParam String type, Principal principal, Pageable pageable){
+    ResponseEntity<?> fetchTasks(Principal principal, Pageable pageable){
         return ResponseEntity.ok(taskService.fetchTasks(principal,pageable));
     }
 
     @GetMapping("/assign")
-    ResponseEntity<Page<Task>> assignTask(@RequestParam String taskType, Principal principal, Pageable pageable){
-        return ResponseEntity.ok(taskService.assignTask(taskType, principal, pageable));
+    ResponseEntity<?> getAssignTask(@RequestParam String taskPriority, Principal principal, Pageable pageable){
+        return ResponseEntity.ok(taskService.getAssignTask(taskPriority, principal, pageable));
     }
-
-    @PostMapping("/assign")
-    ResponseEntity<MessageResponse> assignTaskToUser(@RequestBody TaskAssignDto dto, Principal principal){
-        taskService.assignTaskToUser(dto, principal);
-        return ResponseEntity.ok().build();
-    }
-
-
 
 }

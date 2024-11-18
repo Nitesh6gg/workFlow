@@ -16,7 +16,7 @@ public class TaskSpecifications {
 
     public static Specification<Task> assignTo(int userId) {
         return (Root<Task> root, CriteriaQuery<?> query, CriteriaBuilder cb) ->
-                cb.equal(root.get("assignUserId").get("id"), userId);
+                cb.equal(root.get("assignUserId").get("userId"), userId);
     }
 
 

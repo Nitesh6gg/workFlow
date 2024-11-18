@@ -20,7 +20,7 @@ public interface TaskService {
 
     Page<Map<String,Object>> fetchTasks(Principal principal, Pageable pageable);
 
-    Page<Task> assignTask(String taskType, Principal principal, Pageable pageable);
+    Page<Map<String,Object>> getAssignTask(String taskPriority, Principal principal, Pageable pageable);
 
-    MessageResponse assignTaskToUser(TaskAssignDto dto, Principal principal) throws BadRequestException, UnAuthoriseException;
+
 }
