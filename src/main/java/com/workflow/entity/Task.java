@@ -2,7 +2,8 @@ package com.workflow.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.Fetch;
+
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -31,5 +32,7 @@ public class Task {
 
     private String startDate;
     private String dueDate;
+    private LocalDateTime createdON;
+    private LocalDateTime assignDate;
     private String createdBy;
 }
